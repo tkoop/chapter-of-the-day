@@ -1,0 +1,19 @@
+{
+  "name": "Chapter Of The Day",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx @tailwindcss/cli -i public/tailwind-in.css -o public/tailwind-out.css",
+    "watch": "npx @tailwindcss/cli -i public/tailwind-in.css -o public/tailwind-out.css --watch",
+    "serve": "npx serve public -l 8000"
+  },
+  "keywords": [],
+  "author": "Tim Koop",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.11",
+    "serve": "^14.2.4",
+    "tailwindcss": "^4.1.11"
+  }
+}
