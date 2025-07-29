@@ -125,22 +125,50 @@ async function getChapterHTML(chapterIndex, bibleId = "de4e12af7f28f599-02") {
   };
 }
 
+async function getSupportedTranslations() {
+  const response = await fetch("https://api.scripture.api.bible/v1/bibles", {
+    headers: { "api-key": window.API_BIBLE_KEY },
+  });
+  const data = await response.json();
+  if (!data.data) return [];
+  // Return an array of objects with id, abbreviation, and name
+  return data.data.map((bible) => ({
+    id: bible.id,
+    abbreviation: bible.abbreviation,
+    name: bible.name,
+  }));
+}
+
 // On script load, fetch and display the chapter for today
-getChapterHTML(((daysSinceJuly272025() + 124) % getTotalChapters()) + 1).then(
-  (data) => {
+(async () => {
+  const translations = await getSupportedTranslations();
+  const select = document.createElement("select");
+  select.id = "bible-chapter-translation-select";
+  select.className = "text-sm text-gray-500 border rounded px-2 py-1";
+  translations.forEach((t) => {
+    const option = document.createElement("option");
+    option.value = t.id;
+    option.textContent = t.abbreviation + " - " + t.name;
+    if (t.id === "de4e12af7f28f599-02") option.selected = true;
+    select.appendChild(option);
+  });
+  const translationDiv = document.getElementById("bible-chapter-translation");
+  translationDiv.textContent = "";
+  translationDiv.appendChild(select);
+
+  async function loadChapter(bibleId) {
+    const data = await getChapterHTML(
+      ((daysSinceJuly272025() + 124) % getTotalChapters()) + 1,
+      bibleId
+    );
     document.getElementById("bible-chapter-ref").textContent = data.ref;
-    document.getElementById("bible-chapter-translation").textContent =
-      data.translation;
     document.getElementById("bible-chapter").innerHTML = data.content;
   }
-);
 
-function daysSinceJuly272025() {
-  const start = new Date(2025, 6, 27); // July is month 6 (0-based)
-  const now = new Date();
-  // Zero out the time for both dates
-  start.setHours(0, 0, 0, 0);
-  now.setHours(0, 0, 0, 0);
-  const diff = now - start;
-  return Math.floor(diff / (1000 * 60 * 60 * 24));
-}
+  select.addEventListener("change", (e) => {
+    loadChapter(select.value);
+  });
+
+  // Initial load
+  loadChapter(select.value);
+})();
