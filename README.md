@@ -10,4 +10,6 @@ If you want to serve the site locally, you can run `npm ci; npm run serve`
 
 Serve out the files in `/public`.
 
+First copy public/env_sample.js to public/env.js and get an API key.
+
 Licensed under MIT.

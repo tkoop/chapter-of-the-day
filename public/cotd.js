@@ -1,80 +1,80 @@
 function getTotalChapters() {
-  return 1189; //chapters.reduce((sum, [_, numChapters]) => sum + numChapters, 0);
+  return 1189; //books.reduce((sum, [_, numChapters]) => sum + numChapters, 0);
 }
 
-const chapters = [
-  ["Genesis", 50],
-  ["Exodus", 40],
-  ["Leviticus", 27],
-  ["Numbers", 36],
-  ["Deuteronomy", 34],
-  ["Joshua", 24],
-  ["Judges", 21],
-  ["Ruth", 4],
-  ["1 Samuel", 31],
-  ["2 Samuel", 24],
-  ["1 Kings", 22],
-  ["2 Kings", 25],
-  ["1 Chronicles", 29],
-  ["2 Chronicles", 36],
-  ["Ezra", 10],
-  ["Nehemiah", 13],
-  ["Esther", 10],
-  ["Job", 42],
-  ["Psalms", 150],
-  ["Proverbs", 31],
-  ["Ecclesiastes", 12],
-  ["Song of Solomon", 8],
-  ["Isaiah", 66],
-  ["Jeremiah", 52],
-  ["Lamentations", 5],
-  ["Ezekiel", 48],
-  ["Daniel", 12],
-  ["Hosea", 14],
-  ["Joel", 3],
-  ["Amos", 9],
-  ["Obadiah", 1],
-  ["Jonah", 4],
-  ["Micah", 7],
-  ["Nahum", 3],
-  ["Habakkuk", 3],
-  ["Zephaniah", 3],
-  ["Haggai", 2],
-  ["Zechariah", 14],
-  ["Malachi", 4],
-  ["Matthew", 28],
-  ["Mark", 16],
-  ["Luke", 24],
-  ["John", 21],
-  ["Acts", 28],
-  ["Romans", 16],
-  ["1 Corinthians", 16],
-  ["2 Corinthians", 13],
-  ["Galatians", 6],
-  ["Ephesians", 6],
-  ["Philippians", 4],
-  ["Colossians", 4],
-  ["1 Thessalonians", 5],
-  ["2 Thessalonians", 3],
-  ["1 Timothy", 6],
-  ["2 Timothy", 4],
-  ["Titus", 3],
-  ["Philemon", 1],
-  ["Hebrews", 13],
-  ["James", 5],
-  ["1 Peter", 5],
-  ["2 Peter", 3],
-  ["1 John", 5],
-  ["2 John", 1],
-  ["3 John", 1],
-  ["Jude", 1],
-  ["Revelation", 22],
+const books = [
+  ["Genesis", 50, "GEN"],
+  ["Exodus", 40, "EXO"],
+  ["Leviticus", 27, "LEV"],
+  ["Numbers", 36, "NUM"],
+  ["Deuteronomy", 34, "DEU"],
+  ["Joshua", 24, "JOS"],
+  ["Judges", 21, "JDG"],
+  ["Ruth", 4, "RUT"],
+  ["1 Samuel", 31, "1SA"],
+  ["2 Samuel", 24, "2SA"],
+  ["1 Kings", 22, "1KI"],
+  ["2 Kings", 25, "2KI"],
+  ["1 Chronicles", 29, "1CH"],
+  ["2 Chronicles", 36, "2CH"],
+  ["Ezra", 10, "EZR"],
+  ["Nehemiah", 13, "NEH"],
+  ["Esther", 10, "EST"],
+  ["Job", 42, "JOB"],
+  ["Psalms", 150, "PSA"],
+  ["Proverbs", 31, "PRO"],
+  ["Ecclesiastes", 12, "ECC"],
+  ["Song of Solomon", 8, "SNG"],
+  ["Isaiah", 66, "ISA"],
+  ["Jeremiah", 52, "JER"],
+  ["Lamentations", 5, "LAM"],
+  ["Ezekiel", 48, "EZK"],
+  ["Daniel", 12, "DAN"],
+  ["Hosea", 14, "HOS"],
+  ["Joel", 3, "JOL"],
+  ["Amos", 9, "AMO"],
+  ["Obadiah", 1, "OBA"],
+  ["Jonah", 4, "JON"],
+  ["Micah", 7, "MIC"],
+  ["Nahum", 3, "NAM"],
+  ["Habakkuk", 3, "HAB"],
+  ["Zephaniah", 3, "ZEP"],
+  ["Haggai", 2, "HAG"],
+  ["Zechariah", 14, "ZEC"],
+  ["Malachi", 4, "MAL"],
+  ["Matthew", 28, "MAT"],
+  ["Mark", 16, "MRK"],
+  ["Luke", 24, "LUK"],
+  ["John", 21, "JHN"],
+  ["Acts", 28, "ACT"],
+  ["Romans", 16, "ROM"],
+  ["1 Corinthians", 16, "1CO"],
+  ["2 Corinthians", 13, "2CO"],
+  ["Galatians", 6, "GAL"],
+  ["Ephesians", 6, "EPH"],
+  ["Philippians", 4, "PHP"],
+  ["Colossians", 4, "COL"],
+  ["1 Thessalonians", 5, "1TH"],
+  ["2 Thessalonians", 3, "2TH"],
+  ["1 Timothy", 6, "1TI"],
+  ["2 Timothy", 4, "2TI"],
+  ["Titus", 3, "TIT"],
+  ["Philemon", 1, "PHM"],
+  ["Hebrews", 13, "HEB"],
+  ["James", 5, "JAS"],
+  ["1 Peter", 5, "1PE"],
+  ["2 Peter", 3, "2PE"],
+  ["1 John", 5, "1JN"],
+  ["2 John", 1, "2JN"],
+  ["3 John", 1, "3JN"],
+  ["Jude", 1, "JUD"],
+  ["Revelation", 22, "REV"],
 ];
 
 function getNthChapter(n) {
   let count = 0;
-  for (let i = 0; i < chapters.length; i++) {
-    const [book, numChapters] = chapters[i];
+  for (let i = 0; i < books.length; i++) {
+    const [book, numChapters] = books[i];
     if (n <= count + numChapters) {
       return book + " " + (n - count);
     }
@@ -83,33 +83,55 @@ function getNthChapter(n) {
   return null; // n is out of range
 }
 
-async function getChapterHTML(chapterIndex) {
+async function getChapterHTML(chapterIndex, bibleId = "de4e12af7f28f599-02") {
+  // bibleId: BSB = "de4e12af7f28f599-02", LEB = "bba9f40183526463-01"
   const reference = getNthChapter(chapterIndex);
-  if (!reference) return "<p>Invalid chapter index.</p>";
-  const url = `https://bible-api.com/${encodeURIComponent(
-    reference
-  )}?translation=web`;
-  const response = await fetch(url);
-  const data = await response.json();
-  let html = `<h2 class="text-2xl font-semibold mb-2">${reference}</h2>`;
-  html += `<div class="text-sm text-gray-500 mb-4">${data.translation_id.toUpperCase()}</div>`;
-  html += '<div class="space-y-2">';
-  data.verses.forEach((verse) => {
-    html += `<p><span class=\"font-bold\">${
-      verse.verse
-    }</span> ${verse.text.trim()}</p>`;
+  if (!reference)
+    return {
+      ref: "",
+      translation: "",
+      content: "<p>Invalid chapter index.</p>",
+    };
+  const [book, chapter] = reference.split(" ");
+  // Find the book ID for api.bible from the books array
+  const bookEntry = books.find((b) => b[0] === book);
+  const bookId = bookEntry ? bookEntry[2] : null;
+  if (!bookId)
+    return {
+      ref: reference,
+      translation: "",
+      content: `<p>Book not found: ${book}</p>`,
+    };
+  const url = `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${bookId}.${chapter}`;
+  const response = await fetch(url, {
+    headers: { "api-key": window.API_BIBLE_KEY },
   });
-  html += "</div>";
-  return html;
+  const data = await response.json();
+  if (!data.data)
+    return {
+      ref: reference,
+      translation: "",
+      content: `<p>Chapter not found.</p>`,
+    };
+  return {
+    ref: reference,
+    translation:
+      bibleId === "de4e12af7f28f599-02"
+        ? "BSB"
+        : bibleId === "bba9f40183526463-01"
+        ? "LEB"
+        : bibleId,
+    content: `<div class=\"space-y-2\">${data.data.content}</div>`,
+  };
 }
 
 // On script load, fetch and display the chapter for today
 getChapterHTML(((daysSinceJuly272025() + 124) % getTotalChapters()) + 1).then(
-  (html) => {
-    const container = document.getElementById("bible-chapter");
-    if (container) {
-      container.innerHTML = html;
-    }
+  (data) => {
+    document.getElementById("bible-chapter-ref").textContent = data.ref;
+    document.getElementById("bible-chapter-translation").textContent =
+      data.translation;
+    document.getElementById("bible-chapter").innerHTML = data.content;
   }
 );
 
