@@ -1,75 +1,8 @@
+import { books } from "./books.js";
+
 function getTotalChapters() {
   return 1189; //books.reduce((sum, [_, numChapters]) => sum + numChapters, 0);
 }
-
-const books = [
-  ["Genesis", 50, "GEN"],
-  ["Exodus", 40, "EXO"],
-  ["Leviticus", 27, "LEV"],
-  ["Numbers", 36, "NUM"],
-  ["Deuteronomy", 34, "DEU"],
-  ["Joshua", 24, "JOS"],
-  ["Judges", 21, "JDG"],
-  ["Ruth", 4, "RUT"],
-  ["1 Samuel", 31, "1SA"],
-  ["2 Samuel", 24, "2SA"],
-  ["1 Kings", 22, "1KI"],
-  ["2 Kings", 25, "2KI"],
-  ["1 Chronicles", 29, "1CH"],
-  ["2 Chronicles", 36, "2CH"],
-  ["Ezra", 10, "EZR"],
-  ["Nehemiah", 13, "NEH"],
-  ["Esther", 10, "EST"],
-  ["Job", 42, "JOB"],
-  ["Psalms", 150, "PSA"],
-  ["Proverbs", 31, "PRO"],
-  ["Ecclesiastes", 12, "ECC"],
-  ["Song of Solomon", 8, "SNG"],
-  ["Isaiah", 66, "ISA"],
-  ["Jeremiah", 52, "JER"],
-  ["Lamentations", 5, "LAM"],
-  ["Ezekiel", 48, "EZK"],
-  ["Daniel", 12, "DAN"],
-  ["Hosea", 14, "HOS"],
-  ["Joel", 3, "JOL"],
-  ["Amos", 9, "AMO"],
-  ["Obadiah", 1, "OBA"],
-  ["Jonah", 4, "JON"],
-  ["Micah", 7, "MIC"],
-  ["Nahum", 3, "NAM"],
-  ["Habakkuk", 3, "HAB"],
-  ["Zephaniah", 3, "ZEP"],
-  ["Haggai", 2, "HAG"],
-  ["Zechariah", 14, "ZEC"],
-  ["Malachi", 4, "MAL"],
-  ["Matthew", 28, "MAT"],
-  ["Mark", 16, "MRK"],
-  ["Luke", 24, "LUK"],
-  ["John", 21, "JHN"],
-  ["Acts", 28, "ACT"],
-  ["Romans", 16, "ROM"],
-  ["1 Corinthians", 16, "1CO"],
-  ["2 Corinthians", 13, "2CO"],
-  ["Galatians", 6, "GAL"],
-  ["Ephesians", 6, "EPH"],
-  ["Philippians", 4, "PHP"],
-  ["Colossians", 4, "COL"],
-  ["1 Thessalonians", 5, "1TH"],
-  ["2 Thessalonians", 3, "2TH"],
-  ["1 Timothy", 6, "1TI"],
-  ["2 Timothy", 4, "2TI"],
-  ["Titus", 3, "TIT"],
-  ["Philemon", 1, "PHM"],
-  ["Hebrews", 13, "HEB"],
-  ["James", 5, "JAS"],
-  ["1 Peter", 5, "1PE"],
-  ["2 Peter", 3, "2PE"],
-  ["1 John", 5, "1JN"],
-  ["2 John", 1, "2JN"],
-  ["3 John", 1, "3JN"],
-  ["Jude", 1, "JUD"],
-  ["Revelation", 22, "REV"],
-];
 
 function getNthChapter(n) {
   let count = 0;
@@ -81,6 +14,16 @@ function getNthChapter(n) {
     count += numChapters;
   }
   return null; // n is out of range
+}
+
+function daysSinceJuly272025() {
+  const start = new Date(2025, 6, 27); // July is month 6 (0-based)
+  const now = new Date();
+  // Zero out the time for both dates
+  start.setHours(0, 0, 0, 0);
+  now.setHours(0, 0, 0, 0);
+  const diff = now - start;
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
 }
 
 async function getChapterHTML(chapterIndex, bibleId = "de4e12af7f28f599-02") {
@@ -153,13 +96,28 @@ async function loadChapter(bibleId) {
   const translations = await getSupportedTranslations();
   const select = document.createElement("select");
   select.id = "bible-chapter-translation-select";
-  select.className = "text-sm text-gray-500 border rounded px-2 py-1";
+  select.className =
+    "text-sm text-gray-500 border rounded px-2 py-1 max-w-[180px] truncate";
+  // Group translations by language
+  const translationsByLang = {};
   translations.forEach((t) => {
-    const option = document.createElement("option");
-    option.value = t.id;
-    option.textContent = t.abbreviation + " - " + t.name;
-    if (t.id === "de4e12af7f28f599-02") option.selected = true;
-    select.appendChild(option);
+    // Use the first two letters of the id as a fallback if language is missing
+    const lang = t.language || t.id.slice(0, 2) || "Other";
+    if (!translationsByLang[lang]) translationsByLang[lang] = [];
+    translationsByLang[lang].push(t);
+  });
+
+  Object.entries(translationsByLang).forEach(([lang, group]) => {
+    const optgroup = document.createElement("optgroup");
+    optgroup.label = lang;
+    group.forEach((t) => {
+      const option = document.createElement("option");
+      option.value = t.id;
+      option.textContent = t.abbreviation + " - " + t.name;
+      if (t.id === "bba9f40183526463-01") option.selected = true;
+      optgroup.appendChild(option);
+    });
+    select.appendChild(optgroup);
   });
   const translationDiv = document.getElementById("bible-chapter-translation");
   translationDiv.textContent = "";
