@@ -139,6 +139,15 @@ async function getSupportedTranslations() {
   }));
 }
 
+async function loadChapter(bibleId) {
+  const data = await getChapterHTML(
+    ((daysSinceJuly272025() + 124) % getTotalChapters()) + 1,
+    bibleId
+  );
+  document.getElementById("bible-chapter-ref").textContent = data.ref;
+  document.getElementById("bible-chapter").innerHTML = data.content;
+}
+
 // On script load, fetch and display the chapter for today
 (async () => {
   const translations = await getSupportedTranslations();
@@ -155,15 +164,6 @@ async function getSupportedTranslations() {
   const translationDiv = document.getElementById("bible-chapter-translation");
   translationDiv.textContent = "";
   translationDiv.appendChild(select);
-
-  async function loadChapter(bibleId) {
-    const data = await getChapterHTML(
-      ((daysSinceJuly272025() + 124) % getTotalChapters()) + 1,
-      bibleId
-    );
-    document.getElementById("bible-chapter-ref").textContent = data.ref;
-    document.getElementById("bible-chapter").innerHTML = data.content;
-  }
 
   select.addEventListener("change", (e) => {
     loadChapter(select.value);
