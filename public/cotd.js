@@ -75,7 +75,6 @@ async function getSupportedTranslations() {
   const data = await response.json();
   if (!data.data) return [];
 
-  console.log(data.data[0]);
   // Return an array of objects with id, abbreviation, and name
   return data.data.map((bible) => ({
     id: bible.id,
