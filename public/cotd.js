@@ -108,16 +108,25 @@ async function loadChapter(bibleId) {
     translationsByLang[langName].push(t);
   });
 
+  // Check localStorage for saved translation
+  const savedTranslation = localStorage.getItem("bible-translation-id");
+
   Object.entries(translationsByLang).forEach(([lang, group]) => {
     const optgroup = document.createElement("optgroup");
     optgroup.label = lang;
-    // Sort group by t.name (translation name)
-    group.sort((a, b) => a.language.localeCompare(b.language));
+    // Sort group by translation name
+    group.sort((a, b) => a.name.localeCompare(b.name));
     group.forEach((t) => {
       const option = document.createElement("option");
       option.value = t.id;
       option.textContent = t.abbreviation + " - " + t.name;
-      if (t.id === "bba9f40183526463-01") option.selected = true;
+      // Select saved translation, else default to Lexham
+      if (
+        (savedTranslation && t.id === savedTranslation) ||
+        (!savedTranslation && t.id === "bba9f40183526463-01")
+      ) {
+        option.selected = true;
+      }
       optgroup.appendChild(option);
     });
     select.appendChild(optgroup);
@@ -127,6 +136,7 @@ async function loadChapter(bibleId) {
   translationDiv.appendChild(select);
 
   select.addEventListener("change", (e) => {
+    localStorage.setItem("bible-translation-id", select.value);
     loadChapter(select.value);
   });
 
