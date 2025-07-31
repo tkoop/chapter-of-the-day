@@ -1,0 +1,12 @@
+span.v {
+  vertical-align: super;
+  font-size: smaller;
+}
+
+p.s1 {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #374151; /* Tailwind gray-700 */
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}

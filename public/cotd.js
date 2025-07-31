@@ -26,8 +26,7 @@ function daysSinceJuly272025() {
   return Math.floor(diff / (1000 * 60 * 60 * 24));
 }
 
-async function getChapterHTML(chapterIndex, bibleId = "de4e12af7f28f599-02") {
-  // bibleId: BSB = "de4e12af7f28f599-02", LEB = "bba9f40183526463-01"
+async function getChapterHTML(chapterIndex, bibleId) {
   const reference = getNthChapter(chapterIndex);
   if (!reference)
     return {
@@ -58,12 +57,7 @@ async function getChapterHTML(chapterIndex, bibleId = "de4e12af7f28f599-02") {
     };
   return {
     ref: reference,
-    translation:
-      bibleId === "de4e12af7f28f599-02"
-        ? "BSB"
-        : bibleId === "bba9f40183526463-01"
-        ? "LEB"
-        : bibleId,
+    translation: bibleId,
     content: `<div class=\"space-y-2\">${data.data.content}</div>`,
   };
 }
@@ -119,7 +113,7 @@ async function loadChapter(bibleId) {
     group.forEach((t) => {
       const option = document.createElement("option");
       option.value = t.id;
-      option.textContent = t.abbreviation + " - " + t.name;
+      option.textContent = t.name + " (" + t.abbreviation + ")";
       // Select saved translation, else default to Lexham
       if (
         (savedTranslation && t.id === savedTranslation) ||
