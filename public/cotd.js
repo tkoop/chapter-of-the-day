@@ -74,11 +74,14 @@ async function getSupportedTranslations() {
   });
   const data = await response.json();
   if (!data.data) return [];
+
+  console.log(data.data[0]);
   // Return an array of objects with id, abbreviation, and name
   return data.data.map((bible) => ({
     id: bible.id,
     abbreviation: bible.abbreviation,
     name: bible.name,
+    language: bible.language.name,
   }));
 }
 
@@ -98,18 +101,19 @@ async function loadChapter(bibleId) {
   select.id = "bible-chapter-translation-select";
   select.className =
     "text-sm text-gray-500 border rounded px-2 py-1 max-w-[180px] truncate";
-  // Group translations by language
+  // Group translations by language name
   const translationsByLang = {};
   translations.forEach((t) => {
-    // Use the first two letters of the id as a fallback if language is missing
-    const lang = t.language || t.id.slice(0, 2) || "Other";
-    if (!translationsByLang[lang]) translationsByLang[lang] = [];
-    translationsByLang[lang].push(t);
+    const langName = t.language || "Other";
+    if (!translationsByLang[langName]) translationsByLang[langName] = [];
+    translationsByLang[langName].push(t);
   });
 
   Object.entries(translationsByLang).forEach(([lang, group]) => {
     const optgroup = document.createElement("optgroup");
     optgroup.label = lang;
+    // Sort group by t.name (translation name)
+    group.sort((a, b) => a.language.localeCompare(b.language));
     group.forEach((t) => {
       const option = document.createElement("option");
       option.value = t.id;
