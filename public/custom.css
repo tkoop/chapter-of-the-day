@@ -10,3 +10,12 @@ p.s1 {
   margin-top: 1.2em;
   margin-bottom: 0.3em;
 }
+
+p.r {
+  font-size: 0.9rem;
+  font-weight: 400;
+  margin-top: -0.3em;
+  color: #374151; /* Tailwind gray-700 */
+  margin-bottom: 0.3em;
+  font-style: italic;
+}

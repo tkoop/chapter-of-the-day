@@ -63,11 +63,34 @@ async function getChapterHTML(chapterIndex, bibleId) {
 }
 
 async function getSupportedTranslations() {
-  const response = await fetch("https://api.scripture.api.bible/v1/bibles", {
-    headers: { "api-key": window.API_BIBLE_KEY },
-  });
+  const response = await fetch(
+    "https://api.scripture.api.bible/v1/bibles?language=eng",
+    {
+      headers: { "api-key": window.API_BIBLE_KEY },
+    }
+  );
   const data = await response.json();
   if (!data.data) return [];
+
+  let trans = [];
+
+  for (let bible of data.data) {
+    if (
+      trans.length > 0 &&
+      bible.abbreviation == trans[trans.length - 1].abbreviation
+    ) {
+      continue;
+    }
+
+    trans.push({
+      id: bible.id,
+      abbreviation: bible.abbreviation,
+      name: bible.name,
+      language: bible.language.name,
+    });
+  }
+
+  return trans;
 
   // Return an array of objects with id, abbreviation, and name
   return data.data.map((bible) => ({
@@ -106,8 +129,6 @@ async function loadChapter(bibleId) {
   const savedTranslation = localStorage.getItem("bible-translation-id");
 
   Object.entries(translationsByLang).forEach(([lang, group]) => {
-    const optgroup = document.createElement("optgroup");
-    optgroup.label = lang;
     // Sort group by translation name
     group.sort((a, b) => a.name.localeCompare(b.name));
     group.forEach((t) => {
@@ -121,9 +142,8 @@ async function loadChapter(bibleId) {
       ) {
         option.selected = true;
       }
-      optgroup.appendChild(option);
+      select.appendChild(option);
     });
-    select.appendChild(optgroup);
   });
   const translationDiv = document.getElementById("bible-chapter-translation");
   translationDiv.textContent = "";
